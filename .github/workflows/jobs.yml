@@ -1,6 +1,7 @@
 name: job-agent
 on:
-  schedule: [{cron: "0 13 * * *"}]
+  schedule:
+    - cron: "0 18 * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -10,8 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - run: pip install google-genai requests
+        with:
+          python-version: "3.12"
+      - run: pip install google-genai requests pydantic
       - run: python agent.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -19,6 +21,8 @@ jobs:
           TG_CHAT: ${{ secrets.TG_CHAT }}
           PROFILE_MD: ${{ secrets.PROFILE_MD }}
       - run: |
-          git config user.name bot && git config user.email bot@users.noreply.github.com
-          git add seen.json && git commit -m "update seen" || true
+          git config user.name bot
+          git config user.email bot@users.noreply.github.com
+          git add seen.json
+          git commit -m "update seen" || true
           git push
