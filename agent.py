@@ -11,6 +11,10 @@ MODEL = "gemini-3.5-flash-lite"
 MIN_FIT = 70        # raise to 80 if too many results, lower to 60 if too few
 MAX_SCORED = 30    # max Gemini calls per run (free-tier safety)
 
+VERBOSE = not os.environ.get("CI")
+def log(*a):
+    if VERBOSE: print(*a)
+
 
 GREENHOUSE = ["cloudflare", "tailscale", "okta", "datadog", "mozilla", "gitlab", "hootsuite"]
 LEVER = ["telesat"]
@@ -95,7 +99,7 @@ for j in new[:MAX_SCORED]:
     if s is None:
         continue                       # not marked seen, retry next run
     seen.append(j["id"])
-    print(f"  {s.fit}/100 {j['title']} @ {j['company']}")
+    log(f"  {s.fit}/100 {j['title']} @ {j['company']}")
     if not s.dealbreaker and s.fit >= MIN_FIT:
         hits.append((s.fit, f"{s.fit}/100 {j['title']} @ {j['company']} ({j['loc']})\n{s.why}\n{j['url']}"))
     time.sleep(6)                      # stay under rate limits
@@ -107,7 +111,7 @@ elif not jobs:
     msg = "Job agent: no postings fetched. Check company lists and logs."
 else:
     msg = f"No strong matches today ({len(new)} new postings checked)."
-print(msg)
+log(msg)
 
 if os.environ.get("TG_TOKEN") and os.environ.get("TG_CHAT"):
     requests.post(f"https://api.telegram.org/bot{os.environ['TG_TOKEN']}/sendMessage",
