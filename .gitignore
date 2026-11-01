@@ -2,3 +2,4 @@ private/
 .env
 .venv/
 __pycache__/
+.vscode/

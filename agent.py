@@ -8,7 +8,7 @@ from google.genai import types
 from pydantic import BaseModel
 
 MODEL = "gemini-3.5-flash-lite"
-MIN_FIT = 7        # raise to 8 if too many results, lower to 6 if too few
+MIN_FIT = 70        # raise to 80 if too many results, lower to 60 if too few
 MAX_SCORED = 30    # max Gemini calls per run (free-tier safety)
 
 
